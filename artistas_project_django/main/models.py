@@ -1,11 +1,28 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
 # Create your models here.
 
 class Usuario(AbstractUser):
     es_artista = models.BooleanField(default=False)
     es_comprador = models.BooleanField(default=False)
+
+    groups = models.ManyToManyField(
+        Group,
+        related_name='usuarios', #Cambia related name para evitar conflictos
+
+        blank=True,
+        help_text=('Los grupos a los que pertenece este usuario. Un usuario obtendrá todos los permisos otorgados a cada uno de sus grupos.'),
+        
+        related_query_name='usuario',
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='usuarios',
+        blank=True,
+        help_text=('Permisos específicos para esta usuario.'),
+        related_query_name='usuario',
+    )
 
 class Artista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
