@@ -40,3 +40,19 @@ class Obra(models.Model):
     artista = models.ForeignKey(Artista, on_delete=models.CASCADE)
     precio = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     # Más campos como tags, fecha creación... para la obra.
+
+class FavoritoObra(models.Model):
+    comprador = models.ForeignKey('Comprador', on_delete=models.CASCADE)
+    obra = models.ForeignKey('Obra', on_delete=models.CASCADE)
+    fecha_favorito = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('comprador', 'obra')
+
+class FavoritoArtista(models.Model):
+    comprador = models.ForeignKey('Comprador', on_delete=models.CASCADE)
+    artista = models.ForeignKey('Artista', on_delete=models.CASCADE)
+    fecha_favorito = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('comprador', 'artista')
