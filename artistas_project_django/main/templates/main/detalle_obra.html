@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de la Obra{% endblock %}
+
+{% block content %}
+<h2>{{ obra.titulo }}</h2>
+<img src="{{ obra.imagen.url }}" class="img-fluid" alt="{{ obra.titulo }}">
+<p>{{ obra.descripcion }}</p>
+<p><strong>Artista:</strong> {{ obra.artista.usuario.username }}</p>
+<p><strong>Precio:</strong> ${{ obra.precio }}</p>
+<a href="#" class="btn btn-primary">Comprar</a>
+{% endblock %}

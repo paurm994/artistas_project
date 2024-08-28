@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1>Bienvenido a la plataforma de artistas</h1>
+    <p>Descubre obras de arte únicas y conecta con talentosos artistas.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'galeria' %}" role="button">Ver Galería</a>
+</div>
+<div class="row">
+    <!-- Puedes añadir imágenes destacadas aquí -->
+</div>
+{% endblock %}

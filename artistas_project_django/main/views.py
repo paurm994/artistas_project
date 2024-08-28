@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
-from .forms import RegistroForm
+from .forms import RegistroForm, ObraForm
 from .models import Obra, Artista, FavoritoObra, FavoritoArtista
 
 # Create your views here.
