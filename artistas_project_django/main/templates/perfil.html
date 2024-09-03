@@ -1,18 +1,48 @@
 {% extends 'base.html' %}
 
-{% block title %}Perfil{% endblock %}
-
 {% block content %}
-<h2>Perfil de Usuario</h2>
-<p>Nombre de usuario: {{ user.username }}</p>
-<p>Email: {{ user.email }}</p>
-{% if user.es_artista %}
-    <h3>Tus Obras</h3>
+<div class="perfil">
+    <h1>Perfil de {{ usuario.username }}</h1>
+    <p><strong>Email:</strong> {{ usuario.email }}</p>
+
+    <h2>Tipo de cuenta:</h2>
+    {% if es_artista %}
+        <p>Eres un <strong>Artista</strong>.</p>
+    {% elif es_comprador %}
+        <p>Eres un <strong>Comprador</strong>.</p>
+    {% endif %}
+
+    <h2>Opciones disponibles:</h2>
     <ul>
-        {% for obra in user.artista.obra_set.all %}
-        <li>{{ obra.titulo }} - <a href="{% url 'detalle_obra' obra.id %}">Ver Detalles</a></li>
-        {% endfor %}
+        {% if es_artista %}
+            <li><a href="{% url 'subir_obra' %}">Subir una obra</a></li>
+        {% endif %}
+        {% if es_comprador or es_artista %}
+            <li><a href="{% url 'obras_favoritas' %}">Ver obras favoritas</a></li>
+            <li><a href="{% url 'artistas_favoritos' %}">Ver artistas favoritos</a></li>
+        {% endif %}
     </ul>
-    <a href="{% url 'subir_obra' %}" class="btn btn-success">Subir Nueva Obra</a>
-{% endif %}
+
+    <h2>Obras favoritas:</h2>
+    {% if obras_favoritas %}
+        <ul>
+        {% for obra in obras_favoritas %}
+            <li>{{ obra.titulo }} - {{ obra.precio }}$</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tienes obras favoritas.</p>
+    {% endif %}
+
+    <h2>Artistas favoritos:</h2>
+    {% if artistas_favoritos %}
+        <ul>
+        {% for artista in artistas_favoritos %}
+            <li>{{ artista.nombre }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tienes artistas favoritos.</p>
+    {% endif %}
+</div>
 {% endblock %}

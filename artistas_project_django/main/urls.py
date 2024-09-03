@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('galeria/', views.galeria, name='galeria'),
     path('registro/', views.registro, name='registro'),
-    path('perfil', views.perfil, name='perfil'),
+    path('perfil/', views.perfil, name='perfil'),
     path('obra/<int:id>/', views.detalle_obra, name='detalle_obra'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
@@ -15,5 +15,6 @@ urlpatterns = [
     path('favorito/obra/eliminar/<int:obra_id>/', eliminar_favorito_obra, name='eliminar_favorito_obra'),
     path('favorito/artista/agregar/<int:artista_id>/', agregar_favorito_artista, name='agregar_favorito_artista'),
     path('favorito/artista/eliminar/<int:artista_id>/', eliminar_favorito_artista, name='eliminar_favorito_artista'),
+    path('subir_obra/', views.subir_obra, name='subir_obra'),
     # Añadir las rutas que hagan falta
 ]

@@ -1,11 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission, User
 
 # Create your models here.
 
 class Usuario(AbstractUser):
     es_artista = models.BooleanField(default=False)
     es_comprador = models.BooleanField(default=False)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usuarios')
 
     groups = models.ManyToManyField(
         Group,
@@ -25,12 +27,12 @@ class Usuario(AbstractUser):
     )
 
 class Artista(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='artistas') 
     biografia = models.TextField(blank=True, null=True)
     # Más campos específicos del artista
 
 class Comprador(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='compradores')
     # Más campos específicos del comprador
 
 class Obra(models.Model):
