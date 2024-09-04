@@ -7,7 +7,7 @@ class Usuario(AbstractUser):
     es_artista = models.BooleanField(default=False)
     es_comprador = models.BooleanField(default=False)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usuarios')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usuarios', null=True)
 
     groups = models.ManyToManyField(
         Group,

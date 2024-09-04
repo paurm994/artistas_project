@@ -18,8 +18,18 @@ def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
         if form.is_valid():
-            usuario = form.save()
-            print(usuario)
+            usuario = form.save(commit=True)
+            user = User.objects.create_user(username=form.cleaned_data['username'], password=form.cleaned_data['password1'], email=form.cleaned_data['email'])
+            # print(usuario) -> Esto es para hacer debug en caso de que no registre usuario
+            # input() -> Esto también es para debugar, pide input al usuario para seguir con la ejecución
+            usuario.user = user  # Asocia el Usuario con el User
+            usuario.save()  # Ahora guardamos el Usuario con el user_id correctamente asignado
+            # Crea instancias de Artista o Comprador según corresponda
+            if form.cleaned_data['es_artista']:
+                Artista.objects.create(usuario=usuario)
+            if form.cleaned_data['es_comprador']:
+                Comprador.objects.create(usuario=usuario)
+            # print(usuario)
             # Usuario.objects.create(user=usuario) # Verificar si el usuario es un Artista o Comprador
             # es_artista = form.cleaned_data.get('es_artista', False) 
             # es_comprador = form.cleaned_data.get('es_comprador', False) 
@@ -27,7 +37,7 @@ def registro(request):
             #     Artista.objects.create(usuario=usuario, nombre_artistico=form.cleaned_data.get('nombre_artistico')) 
             # elif es_comprador: 
             #     Comprador.objects.create(usuario=usuario, nombre_completo=form.cleaned_data.get('nombre_completo')) # Autenticar y redirigir al usuario a la página de inicio
-            login(request, usuario)
+            login(request, user)
             print(f"Te has autenticado: {request.user.is_authenticated}")  # Depuración
             return redirect('perfil')
     else:
