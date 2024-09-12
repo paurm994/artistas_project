@@ -126,7 +126,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'  # Ruta para la página de inicio de sesión
 LOGIN_REDIRECT_URL = '/perfil/'  # Redirige a la página de perfil después de iniciar sesión correctamente
-LOGOUT_REDIRECT_URL = '/'  # Redirige a la página principal después de cerrar sesión
+LOGOUT_REDIRECT_URL = '/login/'  # Redirige a la página principal después de cerrar sesión
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -148,3 +148,5 @@ LOGGING = {
         },
     },
 }
+
+AUTH_USER_MODEL = 'main.Usuario'
