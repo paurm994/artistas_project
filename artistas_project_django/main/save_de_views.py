@@ -54,10 +54,10 @@ def registro(request):
 @login_required
 def perfil(request):
     usuario = request.user
-    print(dir(usuario))
+    # print(dir(usuario))
     es_usuario = User.objects.filter(username=usuario.username).exists()
 
-# DESCOMENTAR ESTAS DOS PROXIMAS LINEAAS
+    # DESCOMENTAR ESTAS DOS PROXIMAS LINEAS
     # es_artista = Artista.objects.filter(es_artista=usuario.es_artista).exists()
 
     # es_comprador = Comprador.objects.filter(es_comprador=usuario.es_comprador).exists()
