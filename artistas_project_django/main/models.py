@@ -33,10 +33,13 @@ class Usuario(AbstractUser):
 class Artista(models.Model):
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='artistas') 
     biografia = models.TextField(blank=True, null=True)
+    # foto
     # Más campos específicos del artista
 
 class Comprador(models.Model):
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='compradores')
+    # bio
+    # foto
     # Más campos específicos del comprador
 
 class Obra(models.Model):
@@ -65,8 +68,17 @@ class FavoritoArtista(models.Model):
 
 class Perfil(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        # email -> user.email
+        # es_artista -> user.es_artista
+        # es_comprador -> user.es_comprador
     es_artista = models.BooleanField(default=False)
     es_comprador = models.BooleanField(default=False)
+    
+    # Campos adicionales:
+    # direccion
+    # codigo_postal
+    # tlf
+    # etc
 
     def __str__(self):
         return f"Perfil de {self.user.username}"
@@ -74,8 +86,14 @@ class Perfil(models.Model):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def crear_perfil(sender, instance, created, **kwargs):
     if created:
-        Perfil.objects.create(user=instance)
+        Perfil.objects.create(user=instance, es_artista=instance.es_artista, es_comprador=instance.es_comprador)
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def guardar_perfil(sender, instance, **kwargs):
     instance.perfil.save()
+    
+class RedSocial(models.Model):
+    # nombre
+    # usuario
+    # user -> FK
+    pass
