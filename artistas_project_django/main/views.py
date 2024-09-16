@@ -29,6 +29,9 @@ def registro(request):
                 messages.error(request, f"Ha habido un problema con el registro")
                 return redirect('registro')
             else:
+                # Hashear la contraseña antes de guardar el usuario
+                usuario.set_password(form.cleaned_data['password'])
+                
                 usuario.es_artista = form.cleaned_data.get('es_artista', False)
                 usuario.es_comprador = form.cleaned_data.get('es_comprador', False)
                 
