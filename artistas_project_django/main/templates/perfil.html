@@ -3,7 +3,9 @@
 {% block content %}
 <div class="perfil">
     <h1>Perfil de {{ usuario.username }}</h1>
-    <p><strong>Email:</strong> {{ usuario.email }}</p>
+    {% if usuario.email %}
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+    {% endif %}
 
     <h2>Tipo de cuenta:</h2>
     {% if es_artista %}
@@ -18,8 +20,8 @@
             <li><a href="{% url 'subir_obra' %}">Subir una obra</a></li>
         {% endif %}
         {% if es_comprador or es_artista %}
-            <li><a href="{% url 'obras_favoritas' %}">Ver obras favoritas</a></li>
-            <li><a href="{% url 'artistas_favoritos' %}">Ver artistas favoritos</a></li>
+            {% comment %} <li><a href="{% url 'obras_favoritas' %}">Ver obras favoritas</a></li> {% endcomment %}
+            {% comment %} <li><a href="{% url 'artistas_favoritos' %}">Ver artistas favoritos</a></li> {% endcomment %}
         {% endif %}
     </ul>
 

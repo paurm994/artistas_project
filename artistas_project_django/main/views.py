@@ -6,14 +6,16 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib import messages
 
-# Create your views here.
 
 def home(request):
     return render(request, 'home.html')
 
+
 def galeria(request):
     return render(request, 'galeria.html')
+
 
 User = get_user_model()
 
@@ -21,48 +23,55 @@ def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
         if form.is_valid():
-            # Guardamos el usuario pero sin hacer commit aún para realizar más ajustes
             usuario = form.save(commit=False)
-            # Añadimos los valores adicionales (es_artista, es_comprador)
-            print(form.cleaned_data)
-            usuario.save()
-            print(usuario)
-            usuario.es_artista = form.cleaned_data['es_artista']
-            usuario.es_comprador = form.cleaned_data['es_comprador']
-            # Ahora guardamos el usuario completamente
-            usuario.save()
-            # print(usuario) -> Esto es para hacer debug en caso de que no registre usuario
-            # input() -> Esto también es para debugar, pide input al usuario para seguir con la ejecución
-            # Crea instancias de Artista o Comprador según corresponda
-            # if form.cleaned_data['es_artista']:
-            #     Artista.objects.create(usuario=usuario)
-            # if form.cleaned_data['es_comprador']:
-            #     Comprador.objects.create(usuario=usuario)
+            if usuario is None:
+                print("Usuario no creado correctamente")
+                messages.error(request, f"Ha habido un problema con el registro")
+                return redirect('registro')
+            else:
+                # Hashear la contraseña antes de guardar el usuario
+                usuario.set_password(form.cleaned_data['password'])
+                
+                usuario.es_artista = form.cleaned_data.get('es_artista', False)
+                usuario.es_comprador = form.cleaned_data.get('es_comprador', False)
+                
+                # validación: al menos uno debe estar marcado
+                if not usuario.es_artista and not usuario.es_comprador:
+                    messages.error(request, f"Al menos una casilla debe estar marcada: artista o comprador")
+                    return redirect('registro')
+                
+                usuario.save()
 
-            # Crear la instancia de Artista o Comprador solo después de que el usuario esté guardado
-            if usuario.es_artista:
-                Artista.objects.create(usuario=usuario)  # Crear el objeto artista relacionado
-            if usuario.es_comprador:
-                Comprador.objects.create(usuario=usuario)  # Crear el objeto comprador relacionado
-            
-            # Autenticar y redirigir al usuario a su perfil
-            login(request, usuario)
-            print(f"Te has autenticado: {request.user.is_authenticated}")  # Depuración
-            return redirect('perfil')
+                if usuario.es_artista:
+                    Artista.objects.create(usuario=usuario)
+                # Así son excluyentes
+                elif usuario.es_comprador:
+                    Comprador.objects.create(usuario=usuario)
+
+                login(request, usuario)
+                
+                # Añadir mensaje de éxito
+                messages.success(request, f"Registro exitoso. ¡Bienvenido {usuario.username}!")
+                
+                # Redirigir a la página de inicio
+                return redirect('home')
+        else:
+            print("Errores de form:", form.errors)  # Depurar los errores del formulario
     else:
         form = RegistroForm()
-    return render(request, 'registro.html', {'form':form})
+    
+    return render(request, 'registro.html', {'form': form})
 
 @login_required
 def perfil(request):
     usuario = request.user
-    print(dir(usuario))
+    # print(dir(usuario))
     es_usuario = User.objects.filter(username=usuario.username).exists()
 
-# DESCOMENTAR ESTAS DOS PROXIMAS LINEAAS
-    es_artista = Artista.objects.filter(es_artista=usuario.es_artista).exists()
+    # DESCOMENTAR ESTAS DOS PROXIMAS LINEAAS
+    es_artista = Artista.objects.filter(usuario=usuario).exists()
 
-    es_comprador = Comprador.objects.filter(es_comprador=usuario.es_comprador).exists()
+    es_comprador = Comprador.objects.filter(usuario=usuario).exists()
 
     # Aquí puedes obtener más datos relevantes, como las obras favoritas o los artistas favoritos
     # obras_favoritas = usuario.obras_favoritas.all()  # Si tienes un campo 'obras_favoritas' en el modelo Usuario
@@ -75,6 +84,8 @@ def perfil(request):
         # 'obras_favoritas': obras_favoritas,
         # 'artistas_favoritos': artistas_favoritos,
     }
+    
+    print(context)
     
     return render(request, 'perfil.html', context)
 
